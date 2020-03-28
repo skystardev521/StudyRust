@@ -1,66 +1,71 @@
-
-mod bytes;
+mod bytes;//::{Bytes};
 
 fn main() {
-
     let mut vbytes = vec![0u8; 42];
 
-    bytes::write_bytes(&mut vbytes, &mut 0, "hello ccc".as_bytes());
+    let mut _bytes = bytes::Bytes::new(vbytes.as_mut_slice());
 
-    println!("str:{:?}", String::from_utf8_lossy(bytes::read_bytes(&mut vbytes, &mut 0, 8)));
+    _bytes.write_bytes("hello ccc".as_bytes());
 
-    let mut pos = 0;
+    _bytes.set_pos(0);
+    println!("str:{}", String::from_utf8_lossy(_bytes.read_bytes(8)));
+
     let mut vec = vec![0u8; 42];
     println!("Vec Len:{}", vec.len());
+    let mut _bytes = bytes::Bytes::new(vec.as_mut_slice());
+    println!("bytes size:{}", _bytes.get_size());
+    _bytes.write_u8(9);
+    _bytes.write_i8(-9);
+    _bytes.write_u16(999);
 
-    bytes::write_u8(&mut vec, &mut pos, 9);
-    bytes::write_i8(&mut vec, &mut pos, -9);
-    bytes::write_u16(&mut vec, &mut pos, 999);
+    _bytes.write_i16(-999);
+    _bytes.write_u32(99999);
+    _bytes.write_i32(-99999);
+    _bytes.write_u64(9999999999);
+    _bytes.write_i64(-9999999999);
+    _bytes.write_f32(99999.99);
+    _bytes.write_f64(-99999.99);
 
-    bytes::write_i16(&mut vec, &mut pos, -999);
-    bytes::write_u32(&mut vec, &mut pos, 99999);
-    bytes::write_i32(&mut vec, &mut pos, -99999);
-    bytes::write_u64(&mut vec, &mut pos, 9999999999);
-    bytes::write_i64(&mut vec, &mut pos, -9999999999);
-    bytes::write_f32(&mut vec, &mut pos, 99999.99);
-    bytes::write_f64(&mut vec, &mut pos, -99999.99);
+    println!("pos:{}", _bytes.get_pos());
 
-    println!("pos:{}", pos);
+    _bytes.set_pos(0);
+    println!("read_u8:{}", _bytes.read_u8());
+    println!("read_i8:{}", _bytes.read_i8());
+    println!("read_u16:{}", _bytes.read_u16());
+    println!("read_i16:{}", _bytes.read_i16());
+    println!("read_u32:{}", _bytes.read_u32());
+    println!("read_i32:{}", _bytes.read_i32());
+    println!("read_u64:{}", _bytes.read_u64());
+    println!("read_i64:{}", _bytes.read_i64());
+    println!("read_f32:{}", _bytes.read_f32());
+    println!("read_f64:{}", _bytes.read_f64());
 
-    let mut pos = 0;
-    println!("read_u8:{}", bytes::read_u8(&vec, &mut pos));
-    println!("read_i8:{}", bytes::read_i8(&vec, &mut pos));
-    println!("read_u16:{}", bytes::read_u16(&vec, &mut pos));
-    println!("read_i16:{}", bytes::read_i16(&vec, &mut pos));
-    println!("read_u32:{}", bytes::read_u32(&vec, &mut pos));
-    println!("read_i32:{}", bytes::read_i32(&vec, &mut pos));
-    println!("read_u64:{}", bytes::read_u64(&vec, &mut pos));
-    println!("read_i64:{}", bytes::read_i64(&vec, &mut pos));
-    println!("read_f32:{}", bytes::read_f32(&vec, &mut pos));
-    println!("read_f64:{}", bytes::read_f64(&vec, &mut pos));
-    println!("pos:{}", pos);
+    println!("pos:{}", _bytes.get_pos());
 
-    let f32_bytes = 99.9f32.to_le_bytes();
-    println!("leu8_to_f32:{}", bytes::read_f32(&f32_bytes, &mut 0));
+    let mut f32_bytes = 99.9f32.to_le_bytes();
+    let mut _bytes = bytes::Bytes::new(&mut f32_bytes);
+    println!("leu8_to_f32:{}", _bytes.read_f32());
 
-    let f64_bytes = 99.9f64.to_le_bytes();
-    println!("leu8_to_f64:{}", bytes::read_f64(&f64_bytes, &mut 0));
+    let mut f64_bytes = 99.9f64.to_le_bytes();
+    let mut _bytes = bytes::Bytes::new(&mut f64_bytes);
+    println!("leu8_to_f64:{}", _bytes.read_f64());
 
-    let be = 1u16.to_be_bytes();
-    let le = 1u16.to_le_bytes();
+    let mut be_bytes = 1u16.to_be_bytes();
+    let mut le_bytes = 1u16.to_le_bytes();
+    let mut bytes_be = bytes::Bytes::new(&mut be_bytes);
+    let mut bytes_le = bytes::Bytes::new(&mut le_bytes);
     println!(
         "be:{} le:{}",
-        bytes::read_u16(&be, &mut 0).to_le(),
-        bytes::read_u16(&le, &mut 0)
+        bytes_be.read_u16().to_le(),
+        bytes_le.read_u16()
     );
 
-    let fle = 1f32.to_le_bytes();
-    let fbe = 0.000000000000000000000000000000000000000046006f32.to_be_bytes();
-    println!(
-        "be:{} le:{}",
-        bytes::read_f32(&fbe, &mut 0),
-        bytes::read_f32(&fle, &mut 0)
-    );
+    let mut fle_bytes = 1f32.to_le_bytes();
+    let mut fbe_bytes = 0.000000000000000000000000000000000000000046006f32.to_be_bytes();
+
+    let mut bytes_fle = bytes::Bytes::new(&mut fle_bytes);
+    let mut bytes_fbe = bytes::Bytes::new(&mut fbe_bytes);
+    println!("be:{} le:{}", bytes_fle.read_f32(), bytes_fbe.read_f32());
 }
 
 /*
